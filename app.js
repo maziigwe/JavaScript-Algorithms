@@ -11,5 +11,13 @@ function isPowerTwo(number) {
   return true;
 }
 
-console.log(isPowerTwo(5));
-console.log(isPowerTwo(10));
+// using bitwise operator
+function isPowerTwo_Improved(number) {
+  if (number <= 1) return false;
+
+  return (number & (number - 1)) === 0;
+}
+
+console.log(isPowerTwo_Improved(5));
+console.log(isPowerTwo_Improved(8));
+console.log(isPowerTwo_Improved(16));
