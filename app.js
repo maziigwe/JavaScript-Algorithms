@@ -8,39 +8,39 @@ class KnapSack {
   constructor(list = [], maxCap) {
     _list.set(this, list);
     _maxCap.set(this, maxCap);
+    _optimize.set(this, (list, maxCap, listSize) => {
+      if (maxCap === 0 || listSize < 0) {
+        return { items: [], value: 0, weight: 0 };
+      }
+      if (maxCap < list[listSize].weight) {
+        return _optimize.get(this)(list, maxCap, listSize - 1);
+      }
+
+      const sackWithItem = _optimize.get(this)(
+        list,
+        maxCap - list[listSize].weight,
+        listSize - 1
+      );
+      const sackWithoutItem = _optimize.get(this)(list, maxCap, listSize - 1);
+
+      const valueWithItem = sackWithItem.value + list[listSize].value;
+      const valueWithoutItem = sackWithoutItem.value;
+
+      if (valueWithItem > valueWithoutItem) {
+        const updatedStack = {
+          items: sackWithItem.items.concat(list[listSize]),
+          value: sackWithItem.value + list[listSize].value,
+          weight: sackWithItem.weight + list[listSize].weight,
+        };
+        return updatedStack;
+      } else {
+        return sackWithoutItem;
+      }
+    });
   }
 
-  optimize(list, maxCap, listSize) {
-    if (maxCap === 0 || listSize < 0) {
-      return { items: [], value: 0, weight: 0 };
-    }
-    if (maxCap < list[listSize].weight) {
-      return this.optimize(list, maxCap, listSize - 1);
-    }
-
-    const sackWithItem = this.optimize(
-      list,
-      maxCap - list[listSize].weight,
-      listSize - 1
-    );
-    const sackWithoutItem = this.optimize(list, maxCap, listSize - 1);
-
-    const valueWithItem = sackWithItem.value + list[listSize].value;
-    const valueWithoutItem = sackWithoutItem.value;
-
-    if (valueWithItem > valueWithoutItem) {
-      const updatedStack = {
-        items: sackWithItem.items.concat(list[listSize]),
-        value: sackWithItem.value + list[listSize].value,
-        weight: sackWithItem.weight + list[listSize].weight,
-      };
-      return updatedStack;
-    } else {
-      return sackWithoutItem;
-    }
-  }
   get getOptimized() {
-    return this.optimize(
+    return _optimize.get(this)(
       _list.get(this),
       _maxCap.get(this),
       _list.get(this).length - 1
