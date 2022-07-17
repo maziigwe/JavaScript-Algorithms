@@ -48,31 +48,26 @@ class KnapSack {
   }
 }
 
-const items = [
-  { name: "a", value: 3, weight: 3 },
-  { name: "b", value: 6, weight: 8 },
-  { name: "c", value: 10, weight: 3 },
-];
-
-//console.log(optimize(items, 8, items.length - 1));
-const knapSack = new KnapSack(items, 8);
-console.log(knapSack.getOptimized);
+//console.log(knapSack(items, 8, items.length - 1));
+// const knapSack = new KnapSack(items, 8);
+// console.log(knapSack.getOptimized);
 
 //Function solution
-function optimize(list, maxCap, listIndex) {
+function knapSack(list, maxCap, listIndex) {
   if (maxCap === 0 || listIndex < 0) {
     return { items: [], value: 0, weight: 0 };
   }
+
   if (maxCap < list[listIndex].weight) {
-    return optimize(list, maxCap, listIndex - 1);
+    return knapSack(list, maxCap, listIndex - 1);
   }
 
-  const sackWithItem = optimize(
+  const sackWithItem = knapSack(
     list,
     maxCap - list[listIndex].weight,
     listIndex - 1
   );
-  const sackWithoutItem = this.optimize(list, maxCap, listIndex - 1);
+  const sackWithoutItem = knapSack(list, maxCap, listIndex - 1);
 
   const valueWithItem = sackWithItem.value + list[listIndex].value;
   const valueWithoutItem = sackWithoutItem.value;
@@ -88,3 +83,10 @@ function optimize(list, maxCap, listIndex) {
     return sackWithoutItem;
   }
 }
+
+const items = [
+  { name: "a", value: 3, weight: 3 },
+  { name: "b", value: 6, weight: 8 },
+  { name: "c", value: 10, weight: 3 },
+];
+console.log(knapSack(items, 8, items.length - 1));
