@@ -53,35 +53,53 @@ class KnapSack {
 // console.log(knapSack.getOptimized);
 
 //Function solution
-function knapSack(list, maxCap, listIndex) {
+function knapSack(list, maxCap, listIndex, memo) {
+  if (memo[maxCap][listIndex]) {
+    return memo[maxCap][listIndex];
+  }
+
   if (maxCap === 0 || listIndex < 0) {
     return { items: [], value: 0, weight: 0 };
   }
 
   if (maxCap < list[listIndex].weight) {
-    return knapSack(list, maxCap, listIndex - 1);
+    return knapSack(list, maxCap, listIndex - 1, memo);
   }
 
   const sackWithItem = knapSack(
     list,
     maxCap - list[listIndex].weight,
-    listIndex - 1
+    listIndex - 1,
+    memo
   );
-  const sackWithoutItem = knapSack(list, maxCap, listIndex - 1);
+  const sackWithoutItem = knapSack(list, maxCap, listIndex - 1, memo);
 
   const valueWithItem = sackWithItem.value + list[listIndex].value;
   const valueWithoutItem = sackWithoutItem.value;
 
+  let resultSack;
   if (valueWithItem > valueWithoutItem) {
     const updatedStack = {
       items: sackWithItem.items.concat(list[listIndex]),
       value: sackWithItem.value + list[listIndex].value,
       weight: sackWithItem.weight + list[listIndex].weight,
     };
-    return updatedStack;
+    resultSack = updatedStack;
   } else {
-    return sackWithoutItem;
+    resultSack = sackWithoutItem;
   }
+
+  memo[maxCap][listIndex] = resultSack;
+
+  return resultSack;
+}
+
+function knapSackFn(items, maxCap, index) {
+  const memo = Array.from(Array(maxCap + 1), () =>
+    Array(items.length).fill(undefined)
+  );
+  console.log(memo);
+  console.log(knapSack(items, maxCap, index, memo));
 }
 
 const items = [
@@ -89,4 +107,5 @@ const items = [
   { name: "b", value: 6, weight: 8 },
   { name: "c", value: 10, weight: 3 },
 ];
-console.log(knapSack(items, 8, items.length - 1));
+
+console.log(knapSackFn(items, 8, items.length - 1));
