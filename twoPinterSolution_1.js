@@ -22,7 +22,7 @@ function findPair(arr, targetSum) {
     }
   }
 
-  while (leftPointer != rightPointer) {
+  while (leftPointer < rightPointer) {
     pairSum = arr[leftPointer] + arr[rightPointer];
 
     if (pairSum === targetSum) {
